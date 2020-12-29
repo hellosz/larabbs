@@ -20,11 +20,13 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Route::prefix('v1')->namespace('Api')->name('api.v1.')->group(function() {
     Route::middleware('throttle:' . config('api.rate_limits.sign'))->group(function() {
-        // 发送验证码
+        // 返回图片验证码
+        Route::post('captchas', 'CaptchasController@store')->name('captchas.store');
+        // 发送短信验证码
         Route::post('verificationCodes', 'VerificationCodesController@store')->name('verificationCodes.store');
 
         // 注册用户
-        Route::post('user', 'UsersController@store')->name('users.store');
+        Route::post('users', 'UsersController@store')->name('users.store');
     });
 
     Route::middleware('throttle:' . config('api.rate_limits.access'))->group(function() {

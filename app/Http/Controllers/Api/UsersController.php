@@ -18,13 +18,13 @@ class UsersController extends Controller
         $verification = $request->verification_key;
         $storedVerification = Cache::get($verification);
         if (!$storedVerification) {
-            abort(403, '验证码失效');
+            abort(403, '短信验证码失效');
         }
 
         // 验证验证码
         if (!hash_equals((string)$storedVerification['code'], (string)$request->verification_code)) {
             // 401
-            throw new AuthenticationException('验证码错误');
+            throw new AuthenticationException('短信验证码错误');
         }
 
         //  创建用户

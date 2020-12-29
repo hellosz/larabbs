@@ -9,6 +9,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Requests\Api\VerificationCodeRequest;
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
@@ -21,8 +22,21 @@ class VerificationCodesController extends Controller
     //
     public function store(VerificationCodeRequest $request, EasySms $easySms)
     {
+        // 验证图片验证码
+        $captchaKey = $request->captcha_key;
+        $storedCaptcha = Cache::get($captchaKey);
+        if (!$storedCaptcha) {
+            abort(403, '图片验证码失效');
+        }
+
+        // 验证图片验证码是否一致
+        if ($storedCaptcha['code'] != $request->captcha_code) {
+           Cache::forget($captchaKey); // 清除旧的验证码
+           throw new AuthenticationException('图片验证码错误');
+        }
+
         // 发送验证码
-        $phone = $request->phone; // d电话号码
+        $phone = $storedCaptcha['phone']; // 电话号码
 
         if (ENV('APP_DEBUG') == true) {
             // 测试华景验证码为1235
