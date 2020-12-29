@@ -18,9 +18,10 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::prefix('v1')->name('api.v1.')->group(function() {
-    Route::get('version', function () {
+Route::prefix('v1')->namespace('Api')->name('api.v1.')->group(function() {
+    // 发送验证码
+    Route::post('verificationCodes', 'VerificationCodesController@store')->name('verificationCodes.store');
 
-        })->name('version');
-    }
-);
+    //
+
+});
