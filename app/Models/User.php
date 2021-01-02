@@ -36,7 +36,7 @@ class User extends Authenticatable implements MustVerifyEmailContract
     }
 
     protected $fillable = [
-        'name', 'phone', 'email', 'password', 'introduction', 'avatar',
+        'name', 'phone', 'wechat_openid', 'wechat_unionid', 'email', 'password', 'introduction', 'avatar',
     ];
 
     protected $hidden = [

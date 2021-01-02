@@ -25,7 +25,7 @@ class ExampleTest extends TestCase
     {
         // 创建token
         $accessToken = new AccessToken([
-            'access_token' => '40_ELlLm6ckE1qoELaFErcchJswsKCOKLPYlAGSWqbjp98RFQn2uHOJAxI6OvsUEsytIjjTEQEcf-3uYHJQU_f4HQ',
+            'access_token' => '40_nO9hh5B0nBvp6HJePpXSC3O1ZZN3S7dBR8l9rx8peeqDLj0tDS1OIC2WmINVc9vWgY_jjSvjpK4_wdu-4qK2jA',
             'openid' => 'ousZA6CHP5h4IEfFFAMIujyL52_U',
         ]);
 
