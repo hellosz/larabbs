@@ -29,10 +29,14 @@ Route::prefix('v1')->namespace('Api')->name('api.v1.')->group(function() {
         Route::post('users', 'UsersController@store')->name('users.store');
 
         // authorization
-        Route::post('authorization', 'AuthorizationsController@store')->name('authorization.store');
-        Route::post('socials/{social_type}/authorization', 'AuthorizationsController@socialStore')
+        Route::post('authorizations', 'AuthorizationsController@store')->name('authorizations.store');
+        Route::post('socials/{social_type}/authorizations', 'AuthorizationsController@socialStore')
             ->where('social_type', 'wechat')
-            ->name('socials.authorization.store');
+            ->name('socials.authorizations.store');
+
+        // manage token
+        Route::put('authorizations/current', 'AuthorizationsController@update')->name('authorizations.update');
+        Route::delete('authorizations/current', 'AuthorizationsController@destroy')->name('authorizations.destroy');
     });
 
     Route::middleware('throttle:' . config('api.rate_limits.access'))->group(function() {

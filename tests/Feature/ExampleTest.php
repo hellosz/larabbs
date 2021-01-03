@@ -2,7 +2,9 @@
 
 namespace Tests\Feature;
 
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Auth;
 use Overtrue\LaravelSocialite\Socialite;
 use Overtrue\Socialite\AccessToken;
 use Tests\TestCase;
@@ -43,5 +45,11 @@ class ExampleTest extends TestCase
         $accessToken = $driver->getAccessToken($code);
         $user = $driver->user($accessToken);
         dd($user);
+    }
+
+    public function testAuthLogin()
+    {
+        $base = base64_encode();
+
     }
 }

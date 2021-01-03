@@ -4,7 +4,7 @@ namespace App\Http\Requests\Api;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class AuthorizationsRequest extends FormRequest
+class SocialAuthorizationsRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,10 +23,16 @@ class AuthorizationsRequest extends FormRequest
      */
     public function rules()
     {
-        return [
-            //
-            'username' => 'required|string',
-            'password' => 'required|alpha_dash|min:6',
+        $rules = [
+            'code' => 'required_without:access_token|string',
+            'access_token' => 'required_without:code|string',
         ];
+
+        // wechat验证access_token需要openid字段
+        if ($this->social_type === 'wechat' && !$this->code) {
+            $rules['openid'] = 'required|string';
+        }
+
+        return $rules;
     }
 }
