@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Requests\Api\UserRequest;
 use App\Http\Resources\UserResource;
+use App\Models\Image;
 use App\Models\User;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Http\Request;
@@ -38,6 +39,28 @@ class UsersController extends Controller
         Cache::forget($verification);
 
         // 返回结果
+        return (new UserResource($user))->showSensitiveFields();
+    }
+
+    /**
+     * 更新用户信息
+     *
+     * @param UserRequest $request
+     * @return UserResource
+     */
+    public function update(UserRequest $request)
+    {
+        $user = $request->user('api');
+
+        // 更新传递的字段
+        $attributes = $request->only(['name', 'email', 'introduction']);
+        if ($request->avatar_image_id) { // 更新头像
+           $image = Image::find($request->avatar_image_id);
+           $attributes['avatar'] = $image->path;
+        }
+
+        $res = $user->update($attributes);
+
         return (new UserResource($user))->showSensitiveFields();
     }
 
