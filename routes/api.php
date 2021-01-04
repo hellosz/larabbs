@@ -19,6 +19,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 Route::prefix('v1')->namespace('Api')->name('api.v1.')->group(function() {
+    // 用户登录、注册相关接口
     Route::middleware('throttle:' . config('api.rate_limits.sign'))->group(function() {
         // 返回图片验证码
         Route::post('captchas', 'CaptchasController@store')->name('captchas.store');
@@ -40,6 +41,12 @@ Route::prefix('v1')->namespace('Api')->name('api.v1.')->group(function() {
     });
 
     Route::middleware('throttle:' . config('api.rate_limits.access'))->group(function() {
-    });
+        // 游客可以访问的接口
+        Route::get('users/{user}', 'UsersController@show')->name('users.show');
 
+        // 当前登录用户信息
+        Route::middleware('auth:api')->group(function() {
+            Route::get('user', 'UsersController@me')->name('user.me');
+        });
+    });
 });
