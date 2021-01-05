@@ -47,6 +47,9 @@ Route::prefix('v1')->namespace('Api')->name('api.v1.')->group(function() {
         // 分类列表
         Route::get('categories', 'CategoriesController@index')->name('categories.index');
 
+        // 话题列表/详情
+        Route::resource('topics', 'TopicsController')->only(['index', 'show']);
+
         // 当前登录用户信息
         Route::middleware('auth:api')->group(function() {
             Route::get('user', 'UsersController@me')->name('user.me');
@@ -56,6 +59,8 @@ Route::prefix('v1')->namespace('Api')->name('api.v1.')->group(function() {
             // 图片上传
             Route::post('images', 'ImagesController@store')->name('images.store');
 
+            // 话题创建/更新和删除
+            Route::resource('topics', 'TopicsController')->only(['update', 'store', 'destroy']);
         });
     });
 });
