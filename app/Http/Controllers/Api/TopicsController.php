@@ -28,6 +28,14 @@ class TopicsController extends Controller
         return new TopicResource($topic);
     }
 
+    /**
+     * 更新主题
+     *
+     * @param TopicRequest $request
+     * @param Topic $topic
+     * @return TopicResource
+     * @throws \Illuminate\Auth\Access\AuthorizationException
+     */
     public function update(TopicRequest $request, Topic $topic)
     {
         // 鉴权
@@ -37,4 +45,23 @@ class TopicsController extends Controller
         $topic->update($request->all());
         return new TopicResource($topic);
     }
+
+    /**
+     * 删除话题
+     *
+     * @param Topic $topic
+     * @return \Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
+     * @throws \Illuminate\Auth\Access\AuthorizationException
+     */
+    public function destroy(Topic $topic)
+    {
+        // 鉴权
+        $this->authorize('destroy', $topic);
+
+        // 删除数据
+        $topic->delete();
+        return response(null, 204);
+    }
+
+
 }
