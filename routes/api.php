@@ -50,6 +50,9 @@ Route::prefix('v1')->namespace('Api')->name('api.v1.')->group(function() {
         // 话题列表/详情
         Route::resource('topics', 'TopicsController')->only(['index', 'show']);
 
+        // user publish topic list
+        Route::get('users/{user}/topics', 'TopicsController@userIndex')->name('users.topics.index');
+
         // 当前登录用户信息
         Route::middleware('auth:api')->group(function() {
             Route::get('user', 'UsersController@me')->name('user.me');
