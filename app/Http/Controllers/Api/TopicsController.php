@@ -11,7 +11,7 @@ use Illuminate\Http\Request;
 class TopicsController extends Controller
 {
     /**
-     * 新增主题
+     * 发布话题
      *
      * @param TopicRequest $request
      * @param Topic $topic
@@ -25,6 +25,16 @@ class TopicsController extends Controller
         $topic->save();
 
         // 返回结果
+        return new TopicResource($topic);
+    }
+
+    public function update(TopicRequest $request, Topic $topic)
+    {
+        // 鉴权
+        $this->authorize('update', $topic);
+
+        // 更新数据
+        $topic->update($request->all());
         return new TopicResource($topic);
     }
 }
