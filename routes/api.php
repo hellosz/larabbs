@@ -64,6 +64,9 @@ Route::prefix('v1')->namespace('Api')->name('api.v1.')->group(function() {
 
             // 话题创建/更新和删除
             Route::resource('topics', 'TopicsController')->only(['update', 'store', 'destroy']);
+
+            // reply topic
+            Route::post('topics/{topic}/replies', 'RepliesController@store')->name('topics.replies.store');
         });
     });
 });
