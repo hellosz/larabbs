@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Queries\TopicQuery;
 use App\Http\Requests\Api\TopicRequest;
 use App\Http\Resources\TopicResource;
 use App\Models\Topic;
@@ -20,17 +21,9 @@ class TopicsController extends Controller
      * @param Topic $topic
      * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
-    public function index(Request $request, Topic $topic)
+    public function index(Request $request, TopicQuery $topicQuery)
     {
-        $topics = QueryBuilder::for(Topic::class)
-            ->allowedIncludes('user', 'category')
-            ->allowedFilters([
-                'title',
-                AllowedFilter::exact('category_id'),
-                AllowedFilter::scope('withOrder')->default('recentReplied'),
-            ])
-            ->paginate();
-
+        $topics = $topicQuery->paginate();
         return TopicResource::collection($topics);
     }
 
@@ -41,19 +34,29 @@ class TopicsController extends Controller
      * @param User $user
      * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
-    public function userIndex(Request $request, User $user)
+    public function userIndex(Request $request, User $user, TopicQuery $topicQuery)
     {
-        $query = $user->topics()->getQuery();
-        $topics = QueryBuilder::for($query)
-            ->allowedIncludes('user', 'category')
-            ->allowedFilters([
-                'title',
-                AllowedFilter::exact('category_id'),
-                AllowedFilter::scope('withOrder')->default('recentReplied'),
-            ])
-            ->paginate();
-
+        $topics = $topicQuery->where('user_id', $user->id)->paginate();
         return TopicResource::collection($topics);
+    }
+
+    /**
+     * 主题详情
+     *
+     * @param $topicId
+     * @param TopicQuery $topicQuery
+     * @return TopicResource
+     */
+    public function show($topicId, TopicQuery $topicQuery)
+    {
+        // 方案一 不使用路由模型绑定
+//        $result = QueryBuilder::for(Topic::class)
+//            ->allowedIncludes('user', 'category')
+//            ->findOrFail($topic->id);
+
+        // 方案二 重写路由模型绑定
+        $topic = $topicQuery->findOrFail($topicId);
+        return new TopicResource($topic);
     }
 
     /**
