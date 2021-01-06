@@ -29,4 +29,24 @@ class RepliesController extends Controller
 
         return new ReplyResource($reply);
     }
+
+    /**
+     * delete reply
+     *
+     * @param Topic $topic
+     * @param Reply $reply
+     * @return \Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
+     * @throws \Illuminate\Auth\Access\AuthorizationException
+     */
+    public function destroy(Topic $topic, Reply $reply)
+    {
+        if ($topic->id != $reply->topic_id) {
+           abort(404);
+        }
+
+        $this->authorize('destroy', $reply);
+        $reply->delete();
+
+        return response(null, 204);
+    }
 }
