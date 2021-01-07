@@ -62,6 +62,9 @@ Route::prefix('v1')->namespace('Api')->name('api.v1.')->group(function() {
         // 获取推荐列表
         Route::get('links', 'LinksController@index')->name('links.index');
 
+        // active user
+        Route::get('actived/users', 'UsersController@activedIndex')->name('actived.users.index');
+
         // 当前登录用户信息
         Route::middleware('auth:api')->group(function() {
             Route::get('user', 'UsersController@me')->name('user.me');
