@@ -65,7 +65,7 @@ Route::prefix('v1')->middleware('change-locale')->namespace('Api')->name('api.v1
         // active user
         Route::get('actived/users', 'UsersController@activedIndex')->name('actived.users.index');
 
-        // error response
+        // international locale
         Route::get('error', 'ErrorController@index')->name('error.index');
         Route::get('locale', 'ErrorController@locale')->name('locale');
 
