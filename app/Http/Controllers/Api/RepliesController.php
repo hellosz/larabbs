@@ -3,14 +3,43 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Queries\ReplyQuery;
 use App\Http\Requests\Api\ReplyRequest;
 use App\Http\Resources\ReplyResource;
 use App\Models\Reply;
 use App\Models\Topic;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class RepliesController extends Controller
 {
+    /**
+     * 帖子回复列表
+     *
+     * @param Request $request
+     * @param Topic $topic
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     */
+    public function index(ReplyQuery $replyQuery, Topic $topic)
+    {
+        $replies = $replyQuery->where('topic_id', $topic->id)->paginate();
+
+        return ReplyResource::collection($replies);
+    }
+
+    /**
+     * 用户的回复列表
+     *
+     * @param ReplyQuery $replyQuery
+     * @param User $user
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     */
+    public function userIndex(ReplyQuery $replyQuery, User $user)
+    {
+        $replies = $replyQuery->where('user_id', $user->id)->paginate();
+
+        return ReplyResource::collection($replies);
+    }
     //
     /**
      * 回复主题
@@ -22,7 +51,7 @@ class RepliesController extends Controller
      */
     public function store(ReplyRequest  $request, Topic $topic, Reply $reply)
     {
-        $reply->content = $request->content;
+        $reply->content = request()->get('content');
         $reply->user()->associate($request->user());
         $reply->topic()->associate($topic);
         $reply->save();

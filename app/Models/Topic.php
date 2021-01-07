@@ -7,7 +7,7 @@ use Spatie\QueryBuilder\QueryBuilder;
 
 class Topic extends Model
 {
-    use QueryBuilderBindable;
+//    use QueryBuilderBindable;
 
     protected $fillable = [
         'title', 'body', 'category_id', 'excerpt', 'slug'
