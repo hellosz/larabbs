@@ -59,6 +59,9 @@ Route::prefix('v1')->namespace('Api')->name('api.v1.')->group(function() {
         // 某个用户的回复列表
         Route::get('users/{user}/replies', 'RepliesController@userIndex')->name('users.replies.index');
 
+        // 获取推荐列表
+        Route::get('links', 'LinksController@index')->name('links.index');
+
         // 当前登录用户信息
         Route::middleware('auth:api')->group(function() {
             Route::get('user', 'UsersController@me')->name('user.me');
