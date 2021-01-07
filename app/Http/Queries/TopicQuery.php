@@ -21,7 +21,7 @@ class TopicQuery extends QueryBuilder
         parent::__construct(Topic::query());
 
         // 过滤条件
-        $this->allowedIncludes('user', 'category')
+        $this->allowedIncludes('user', 'category', 'user.roles')
             ->allowedFilters([
                 'title',
                 AllowedFilter::exact('category_id'),

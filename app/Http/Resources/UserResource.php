@@ -31,6 +31,9 @@ class UserResource extends JsonResource
         $data['bound_phone'] = $this->resource->phone ? true : false;
         $data['bound_wechat'] = ($this->resource->wechat_unionid || $this->resource->wechat_openid) ? true : false;
 
+        // 用户角色
+        $data['roles'] = RoleResource::collection($this->whenLoaded('roles'));
+
         return $data;
     }
 
