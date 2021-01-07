@@ -86,6 +86,8 @@ Route::prefix('v1')->namespace('Api')->name('api.v1.')->group(function() {
             // 消息已读
             Route::patch('users/read/notifications', 'NotificationsController@read')->name('users.notifications.read');
 
+            // 权限列表
+            Route::get('user/permissions', 'PermissionsController@index')->name('user.permissions.index');
         });
     });
 });
