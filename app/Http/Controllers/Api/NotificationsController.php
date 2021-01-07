@@ -34,4 +34,17 @@ class NotificationsController extends Controller
             'unread_count' => $unreadCount,
         ]);
     }
+
+    /**
+     * 设置消息已读
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function read(Request $request)
+    {
+        $request->user()->markAsRead();
+
+        return response()->json(['message' => '消息已读']);
+    }
 }

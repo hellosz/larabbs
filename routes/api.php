@@ -82,6 +82,10 @@ Route::prefix('v1')->namespace('Api')->name('api.v1.')->group(function() {
 
             // 通知数量
             Route::get('notifications/stat', 'NotificationsController@stat')->name('notifications.stat');
+
+            // 消息已读
+            Route::patch('users/read/notifications', 'NotificationsController@read')->name('users.notifications.read');
+
         });
     });
 });
