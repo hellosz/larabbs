@@ -79,6 +79,9 @@ Route::prefix('v1')->namespace('Api')->name('api.v1.')->group(function() {
 
             // 读取通知列表
             Route::get('notifications', 'NotificationsController@index')->name('notifications.index');
+
+            // 通知数量
+            Route::get('notifications/stat', 'NotificationsController@stat')->name('notifications.stat');
         });
     });
 });

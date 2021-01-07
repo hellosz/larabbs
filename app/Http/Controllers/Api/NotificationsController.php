@@ -8,11 +8,30 @@ use Illuminate\Http\Request;
 
 class NotificationsController extends Controller
 {
-    //
+    /**
+     * 通知列表
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     */
     public function index(Request $request)
     {
         $notifications = $request->user()->notifications()->paginate();
 
         return NotificationResource::collection($notifications);
+    }
+
+    /**
+     * 未读通知数
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function stat(Request $request)
+    {
+        $unreadCount = (int)$request->user()->notification_count;
+        return response()->json([
+            'unread_count' => $unreadCount,
+        ]);
     }
 }
