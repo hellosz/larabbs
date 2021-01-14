@@ -18,7 +18,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::prefix('v1')->namespace('Api')->name('api.v1.')->group(function() {
+Route::prefix('v1')->middleware('change-locale')->namespace('Api')->name('api.v1.')->group(function() {
     // 用户登录、注册相关接口
     Route::middleware('throttle:' . config('api.rate_limits.sign'))->group(function() {
         // 返回图片验证码
@@ -61,6 +61,13 @@ Route::prefix('v1')->namespace('Api')->name('api.v1.')->group(function() {
 
         // 获取推荐列表
         Route::get('links', 'LinksController@index')->name('links.index');
+
+        // active user
+        Route::get('actived/users', 'UsersController@activedIndex')->name('actived.users.index');
+
+        // international locale
+        Route::get('error', 'ErrorController@index')->name('error.index');
+        Route::get('locale', 'ErrorController@locale')->name('locale');
 
         // 当前登录用户信息
         Route::middleware('auth:api')->group(function() {
