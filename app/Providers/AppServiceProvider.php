@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\ServiceProvider;
+use Laravel\Passport\Passport;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -32,5 +33,10 @@ class AppServiceProvider extends ServiceProvider
 
         // 返回结果取消data封装
         JsonResource::withoutWrapping();
+
+        // 注册password
+        Passport::routes();
+        Passport::tokensExpireIn(now()->addDays(7));
+        Passport::refreshTokensExpireIn(now()->addDays(15));
     }
 }
