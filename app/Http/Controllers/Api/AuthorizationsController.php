@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\AuthorizationsRequest;
 use App\Models\User;
+use App\Traits\PassportToken;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Support\Facades\Auth;
 use League\OAuth2\Server\AuthorizationServer;
@@ -16,6 +17,8 @@ use Laminas\Diactoros\Response as Psr7Response;
 
 class AuthorizationsController extends Controller
 {
+    use PassportToken;
+
     /**
      * 登录授权
      *
@@ -97,7 +100,8 @@ class AuthorizationsController extends Controller
         }
 
         // login, get token
-        $token = auth('api')->login($user);
+//        $token = auth('api')->login($user);
+        $token = $this->createPassportTokenByUser($user, '1', false);
 
         // 返回结果
         return $this->responseWithToken($token);
