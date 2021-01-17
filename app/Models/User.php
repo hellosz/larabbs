@@ -7,6 +7,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Auth\MustVerifyEmail as MustVerifyEmailTrait;
 use Auth;
+use Laravel\Passport\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
@@ -17,6 +18,8 @@ class User extends Authenticatable implements MustVerifyEmailContract, JWTSubjec
     use HasRoles;
     use MustVerifyEmailTrait;
     use Traits\ActiveUserHelper;
+
+    use HasApiTokens;
 
     use Notifiable {
         notify as protected laravelNotify;
@@ -117,5 +120,20 @@ class User extends Authenticatable implements MustVerifyEmailContract, JWTSubjec
         return [];
     }
 
+    /**
+     * 查找用户
+     *
+     * @param $username
+     * @return mixed
+     */
+    public function findForPassport($username)
+    {
+        // 根据类型查找字段
+        filter_var($username, FILTER_VALIDATE_EMAIL) ?
+            $credential['email'] = $username :
+            $credential['phone'] = $username;
+
+        return self::where($credential)->first();
+    }
 
 }

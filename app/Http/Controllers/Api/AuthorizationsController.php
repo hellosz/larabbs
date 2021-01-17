@@ -4,35 +4,51 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\AuthorizationsRequest;
-use App\Http\Requests\Api\SocialAuthorizationsRequest;
 use App\Models\User;
 use Illuminate\Auth\Access\AuthorizationException;
-use Illuminate\Auth\AuthenticationException;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use League\OAuth2\Server\AuthorizationServer;
+use League\OAuth2\Server\Exception\OAuthServerException;
 use Overtrue\Socialite\AccessToken;
+use Psr\Http\Message\ServerRequestInterface;
+use Laminas\Diactoros\Response as Psr7Response;
+
 
 class AuthorizationsController extends Controller
 {
     /**
-     * api login
-     * @return \Illuminate\Http\JsonResponse
+     * 登录授权
+     *
+     * @param AuthorizationsRequest $request
+     * @param AuthorizationServer $server
+     * @param ServerRequestInterface $serverRequest
+     * @return \Psr\Http\Message\ResponseInterface
      */
-    public function store(AuthorizationsRequest $request)
+//    public function store(AuthorizationsRequest $request, AuthorizationServer $server, ServerRequestInterface $serverRequest)
+//    {
+//        try {
+//            return $server->respondToAccessTokenRequest($serverRequest, new Psr7Response())->withStatus(201);
+//        } catch (OAuthServerException $e) {
+//            new AuthorizationException($e->getMessage());
+//        }
+//    }
+
+    /**
+     * 整合第三方登录
+     *
+     * @param AuthorizationsRequest $originRequest
+     * @param AuthorizationServer $server
+     * @param ServerRequestInterface $serverRequest
+     * @return \Psr\Http\Message\ResponseInterface
+     * @throws AuthorizationException
+     */
+    public function store(AuthorizationsRequest $originRequest, AuthorizationServer $server, ServerRequestInterface $serverRequest)
     {
-        // 设置登录账号和密码
-        filter_var($request->username, FILTER_VALIDATE_EMAIL) ?
-            $cridential['email'] = $request->username :
-            $cridential['phone'] = $request->username;
-
-        $cridential['password'] = $request->password;
-
-        //  check cridential
-        if (!$token = Auth::guard('api')->attempt($cridential)) {
-            throw new AuthenticationException('账号或者密码错误！');
+        try {
+            return $server->respondToAccessTokenRequest($serverRequest, new Psr7Response)->withStatus(201);
+        } catch(OAuthServerException $e) {
+            throw new AuthorizationException($e->getMessage());
         }
-
-        return $this->responseWithToken($token)->setStatusCode(201);
     }
 
     public function socialStore($type, SocialAuthorizationsRequest $request)
@@ -92,11 +108,28 @@ class AuthorizationsController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse|object
      */
-    public function update()
-    {
-        $token = auth('api')->refresh();
-        return $this->responseWithToken($token)->setStatusCode(201);
+//    public function update()
+//    {
+//        $token = auth('api')->refresh();
+//        return $this->responseWithToken($token)->setStatusCode(201);
+//
+//    }
 
+    /**
+     * 整合第三方登录
+     *
+     * @param AuthorizationServer $server
+     * @param ServerRequestInterface $serverRequest
+     * @return \Psr\Http\Message\ResponseInterface
+     * @throws AuthorizationException
+     */
+    public function update(AuthorizationServer $server, ServerRequestInterface $serverRequest)
+    {
+        try {
+            return $server->respondToAccessTokenRequest($serverRequest, new Psr7Response);
+        } catch(OAuthServerException $e) {
+            throw new AuthorizationException($e->getMessage());
+        }
     }
 
     /**
@@ -104,12 +137,28 @@ class AuthorizationsController extends Controller
      *
      * @return \Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
      */
+//    public function destroy()
+//    {
+//        auth('api')->logout();
+//        return response(null, 204);
+//
+//    }
+
+
+    /**
+     * destroy token
+     *
+     * @throws AuthorizationException
+     */
     public function destroy()
     {
-        auth('api')->logout();
-        return response(null, 204);
-
+        if (auth('api')->check()) {
+            auth('api')->user()->token()->revoke();
+        } else {
+            throw new AuthorizationException('Access token is invalid');
+        }
     }
+
     /**
      * 返回结果
      *
